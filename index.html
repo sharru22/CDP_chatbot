@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDP Support Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { padding: 10px; margin-top: 10px; }
+        #chat-box { width: 50%; margin: auto; text-align: left; border: 1px solid #ccc; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>CDP Support Chatbot</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="user_input" placeholder="Ask a question...">
+    <button onclick="sendQuestion()">Ask</button>
+
+    <script>
+        function sendQuestion() {
+            var userInput = document.getElementById("user_input").value;
+            if (userInput.trim() === "") return;
+
+            var chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += "<p><b>You:</b> " + userInput + "</p>";
+
+            fetch("/get_answer", {
+                method: "POST",
+                body: new URLSearchParams({ "user_question": userInput }),
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.text())
+            .then(answer => {
+                chatBox.innerHTML += "<p><b>Chatbot:</b> " + answer + "</p>";
+                document.getElementById("user_input").value = "";
+            });
+        }
+    </script>
+</body>
+</html>
